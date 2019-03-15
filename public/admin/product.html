@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylish Product Management</title>
+<style>
+body{
+	font-size:16px;
+	font-family:"Noto Sans TC", "微軟正黑體", "新細明體", arial, sans-serif;
+	color:#3f3a3a;line-height:2.5em;
+}
+textarea{
+	width:400px;height:100px;padding:5px;
+}
+input{
+	width:300px;padding:5px;
+}
+</style>
+</head>
+<body>
+	<h3>Create a New Product</h3>
+	<form method="post" action="/api/1.0/admin/product" enctype="multipart/form-data">
+		ID <input type="text" name="id" /><br/>
+		Category <select name="category">
+			<option value="women">Women</option>
+			<option value="men">Men</option>
+			<option value="accessories">Accessories</option>
+		</select><br/>
+		Title <input type="text" name="title" /><br/>
+		Description<br/><textarea name="description"></textarea><br/>
+		Price <input type="text" name="price" />
+		<hr/>
+		Texture <input type="text" name="texture" /><br/>
+		Wash <input type="text" name="wash" /><br/>
+		Place of Production <input type="text" name="place" /><br/>
+		Note <input type="text" name="note" />
+		<hr/>
+		Colors <input type="text" name="color_codes" value="FFFFFF,FFDDDD,DDFFBB,DDF0FF,CCCCCC,BB7744,334455" /><br/>
+		Color Names <input type="text" name="color_names" value="白色,粉紅,亮綠,淺藍,淺灰,淺棕,深藍" /><br/>
+		Sizes <input type="text" name="sizes" value="S,M,L,XL,F" />
+		<hr/>
+		Story<br/><textarea name="story"></textarea><br/>
+		Main Image <input type="file" name="main_image" /><br/>
+		Other Images <input type="file" name="other_images" multiple /><br/>
+		<br/>
+		<input type="submit" value="Create" />
+	</form>
+</body>
+</html>
