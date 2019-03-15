@@ -14,7 +14,7 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const multer = require("multer");
 const app = express();
-app.use(express.static(cst.STYLISH_HOME+"/public"));
+app.use(express.static("public"));
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:true}));
 // CORS Control
@@ -28,9 +28,9 @@ app.use("/api/", function(req, res, next){
 
 
 /* ---------------Route--------------- */
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
 	res.send("OK");
-});
+}); */
 
 // Admin API
 app.post("/api/"+cst.API_VERSION+"/admin/product", function(req, res){
