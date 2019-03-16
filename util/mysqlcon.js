@@ -39,7 +39,12 @@ ssh.on('ready', function() {
 				if (err) throw err;
 				console.log("Connect to MySQL succeed!");
 			});
-	
+			
+			module.exports={
+				core:mysql,
+				con:mysqlCon
+			};
+				
 		});
 	}).connect({
 	// ssh connection config ...
@@ -51,7 +56,3 @@ ssh.on('ready', function() {
 
 
 
-module.exports={
-	core:mysql,
-	con:mysqlCon
-};

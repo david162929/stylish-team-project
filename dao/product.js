@@ -1,6 +1,44 @@
 const cst=require("../util/constants.js");
-// MySQL Initialization
-const mysql=require("../util/mysqlcon.js");
+
+/* --------------- MySQL Initialization --------------- */
+const mysql2 = require("mysql2");
+const Client = require('ssh2').Client;
+
+const mysql = {};
+
+const ssh = new Client();
+ssh.on('ready', function() {
+	ssh.forwardOut(
+		'127.0.0.1',
+		12345,
+		'127.0.0.1',
+		3306,
+		function (err, stream) {
+			if (err) throw err;
+			mysql.con = mysql2.createConnection({
+			  user: 'root',
+			  database: 'stylish',
+			  password: '567TYUghj@$^*',
+			  stream: stream,
+			});		
+				
+			// use sql connection as usual
+			mysql.con.query("SELECT id FROM product", function (err, result, fields) {
+				if (err) throw err;
+				console.log("Connect to MySQL succeed!");
+			});
+	
+		});
+	}).connect({
+	// ssh connection config ...
+	host: '52.15.89.192',
+	port: 22,
+	username: 'ec2-user',
+	privateKey: require('fs').readFileSync(".ssh/2019-2-14-keyPair.pem")
+}); 
+
+
+
 // Build DAO Object
 module.exports={
 	insert:function(req){
@@ -157,19 +195,27 @@ module.exports={
 	get:function(productId){
 		return new Promise(function(resolve, reject){
 			let query="select * from product where id = ?";
+			console.log(product.id, "8");
 			mysql.con.query(query, [productId], function(error, results, fields){
+				console.log(product.id, "7");
 				if(error){
+					console.log(product.id, "6");
 					reject("Database Query Error");
 				}else{
+					console.log(product.id, "5");
 					if(results.length===0){
+						console.log(product.id, "4");
 						resolve(null);
 					}else{
 						let product=results[0];
 						query="select * from variant where product_id = ?";
+						console.log(product.id, "adsgfagareg");
 						mysql.con.query(query, [product.id], function(error, results, fields){
 							if(error){
+								console.log(product.id, "2");
 								reject("Database Query Error");
 							}else{
+								console.log(product.id, "3");
 								product.colors=[];
 								product.sizes=[];
 								product.variants=[];
