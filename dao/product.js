@@ -157,19 +157,27 @@ module.exports={
 	get:function(productId){
 		return new Promise(function(resolve, reject){
 			let query="select * from product where id = ?";
+			console.log(product.id, "8");
 			mysql.con.query(query, [productId], function(error, results, fields){
+				console.log(product.id, "7");
 				if(error){
+					console.log(product.id, "6");
 					reject("Database Query Error");
 				}else{
+					console.log(product.id, "5");
 					if(results.length===0){
+						console.log(product.id, "4");
 						resolve(null);
 					}else{
 						let product=results[0];
 						query="select * from variant where product_id = ?";
+						console.log(product.id, "adsgfagareg");
 						mysql.con.query(query, [product.id], function(error, results, fields){
 							if(error){
+								console.log(product.id, "2");
 								reject("Database Query Error");
 							}else{
+								console.log(product.id, "3");
 								product.colors=[];
 								product.sizes=[];
 								product.variants=[];

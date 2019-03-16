@@ -4,7 +4,55 @@ const crypto = require("crypto");
 const fs = require("fs");
 const request = require("request");
 // MySQL Initialization
-const mysql = require("./util/mysqlcon.js");
+
+let mysql;
+
+setTimeout(()=>{
+	mysql = require("./util/mysqlcon.js");
+	console.log(mysql);}, 5000);
+
+/* const mysql = require("mysql2");
+const Client = require('ssh2').Client; */
+
+/* let mysqlCon;	//can't use const
+
+const ssh = new Client();
+ssh.on('ready', function() {
+	ssh.forwardOut(
+		'127.0.0.1',
+		12345,
+		'127.0.0.1',
+		3306,
+		function (err, stream) {
+			if (err) throw err;
+			mysqlCon = mysql.createConnection({
+			  user: 'root',
+			  database: 'stylish',
+			  password: '567TYUghj@$^*',
+			  stream: stream,
+			});		
+				
+			// use sql connection as usual
+			mysqlCon.query("SELECT id FROM product", function (err, result, fields) {
+				if (err) throw err;
+				console.log("Connect to MySQL succeed!");
+			});
+	
+		});
+	}).connect({
+	// ssh connection config ...
+	host: '52.15.89.192',
+	port: 22,
+	username: 'ec2-user',
+	privateKey: require('fs').readFileSync(".ssh/2019-2-14-keyPair.pem")
+});  */
+
+
+
+
+
+
+
 // Database Access Object
 const dao={
 	product:require("./dao/product.js")
@@ -46,7 +94,7 @@ app.use("/api/", function(req, res, next){
 
 
 /* ---------------Route--------------- */
-app.get("/test", (req, res) => {
+app.get("/test-upload", (req, res) => {
 	res.render("upload-img");
 });
 
@@ -135,6 +183,7 @@ app.post("/api/"+cst.API_VERSION+"/admin/hot", function(req, res){
 		});
 	});
 });
+
 // Marketing Campaign API for Front-End
 app.get("/api/"+cst.API_VERSION+"/marketing/campaigns", function(req, res){
 	let query="select * from campaign order by id";
@@ -146,6 +195,7 @@ app.get("/api/"+cst.API_VERSION+"/marketing/campaigns", function(req, res){
 		}
 	});
 });
+
 // Marketing Hots API for Apps
 app.get("/api/"+cst.API_VERSION+"/marketing/hots", function(req, res){
 	let query="select hot.title as title,hot_product.product_id as product_id from hot,hot_product where hot.id=hot_product.hot_id order by hot.id";
