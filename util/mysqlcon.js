@@ -44,9 +44,7 @@ ssh.on('ready', function() {
 				core:mysql,
 				con:mysqlCon
 			};
-			
-			
-	
+				
 		});
 	}).connect({
 	// ssh connection config ...
