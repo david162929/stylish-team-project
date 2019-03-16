@@ -1,0 +1,16 @@
+doctype html
+html(lang="zh-TW")
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title STYLiSH
+    body    
+        section#content
+        h2 product
+        
+        form(action="/api/1.0/admin/avatar",method="post",enctype="multipart/form-data")
+            div
+                label Avatar
+                    div
+                        input(type="file", name="avatar")
+            button(type="submit") Submit

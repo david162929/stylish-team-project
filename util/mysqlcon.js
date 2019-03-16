@@ -38,7 +38,6 @@ ssh.on('ready', function() {
 			mysqlCon.query("SELECT id FROM product", function (err, result, fields) {
 				if (err) throw err;
 				console.log("Connect to MySQL succeed!");
-				console.log(result);
 			});
 	
 		});

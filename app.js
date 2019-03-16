@@ -14,9 +14,27 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const multer = require("multer");
 const app = express();
+
+//set pug
+app.set("view engine", "pug");
+
 app.use(express.static("public"));
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:true}));
+
+//multer set storing files
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+	cb(null, './public/uploads')
+  },
+  filename: function (req, file, cb) {
+	cb(null, Date.now() + "-" + file.originalname)
+  }
+});
+const upload = multer({ storage: storage });
+
+
+
 // CORS Control
 app.use("/api/", function(req, res, next){
 	res.set("Access-Control-Allow-Origin", "*");
@@ -28,9 +46,18 @@ app.use("/api/", function(req, res, next){
 
 
 /* ---------------Route--------------- */
-/* app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
+	res.render("upload-img");
+});
+
+app.post("/api/1.0/admin/avatar", upload.single('avatar'), (req, res) => {
+	console.log(req.file);
+	console.log(req.body);
+
+	console.log("got upload img.");
+
 	res.send("OK");
-}); */
+});
 
 // Admin API
 app.post("/api/"+cst.API_VERSION+"/admin/product", function(req, res){
