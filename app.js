@@ -302,12 +302,23 @@ app.get("/test-upload", (req, res) => {
 	res.render("upload-img");
 });
 
-app.post("/api/1.0/admin/avatar", upload.single('avatar'), (req, res) => {
+app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
 	console.log(req.body);
-
+	
 	console.log("got upload img.");
-
+	
+	let imgPath = "https://nimabachi.com/uploads/" + req.file.filename;
+	console.log(imgPath);
+	
+	//做完會員系統要回來做身分驗證
+	let email = "padalab@gmail.com";
+	
+	//insert database
+	let result1 = await sqlQuery(`UPDATE user SET img_upload = "${imgPath}" WHERE email = "${email}"`);
+	console.log(result1.affectedRows + " record(s) updated");
+	
+	
 	res.send("OK");
 });
 
@@ -890,6 +901,24 @@ app.post("/api/"+cst.API_VERSION+"/order/checkout", function(req, res){
 			});
 		});
 	};
+
+
+/* ---------------Promise--------------- */
+//Use Promise for MySQL .query()
+function sqlQuery (query1) {
+	return new Promise ((reso, rej) => {
+		mysql.con.query(query1,(err, result, fields) => {
+			if (err) {
+				rej(err);
+			}
+			else {
+				reso(result);
+			}
+		});
+	});
+};
+
+
 
 module.exports=app;
 // git password: af7258ba52ea0bd3756239234f5f46812cc57510 
