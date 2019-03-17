@@ -303,6 +303,83 @@ app.get("/test-upload", (req, res) => {
 	res.render("upload-img");
 });
 
+app.get("/test-postfb", (req, res) => {
+	// Set the headers
+	let headers = {
+		'User-Agent':       'Super Agent/0.0.1',
+		'content-type':     'application/json'
+	}
+	let data = {
+		"provider":"facebook",
+		"access_token":"EAAFqxw9GAHQBALTvHGRsGkjrq9Y7ZBZBgQ5FzimQCIhrOvvz7Vdeo0gazXYgXhRNeAAohLFUoxY7cJ7swV5XekudDgrQqpfHh7QcDmJuNZCeQLuzVzceZBBZCQBY8PVUijser11gNUcf02ngGzkXh8g9BGPvZCdIkqYlhwGRiTZAcctZAMo2KoAcQWFzwqO45VwZD",
+	};
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/signin',
+		method: 'POST',
+		headers: headers,
+		json:data
+	}
+
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
+});
+
+app.get("/test-signup", (req, res) => {
+	// Set the headers
+	let headers = {
+		'User-Agent':       'Super Agent/0.0.1',
+		'content-type':     'application/json'
+	}
+	let data = {
+		"name":"test1",
+		"email":"test1@test.com",
+		"password":"test1"
+	};
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/signup',
+		method: 'POST',
+		headers: headers,
+		json:data
+	}
+
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
+	
+	
+	/*//test none JSON POST request
+	console.log("test none JSON POST request:");
+	request({
+			url: 'http://localhost:3000/api/1.0/user/signup',
+			method: 'POST',
+			headers: {'User-Agent':'Super Agent/0.0.1','content-type':'application/x-www-form-urlencoded'},
+			form:{test:"1",test2:"2"}
+		}, (e, r, b) => {
+			if (!e && r.statusCode == 200) {
+			console.log(b);
+		}
+	}); */
+	
+	//res.send("POST request done.");
+});
+
+
+
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
 	console.log(req.body);
