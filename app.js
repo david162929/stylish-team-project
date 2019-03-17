@@ -8,6 +8,7 @@ const Client = require('ssh2').Client;
 
 /* --------------- MySQL Initialization --------------- */
 const mysql = {};
+mysql.core = mysql2;
 
 const ssh = new Client();
 ssh.on('ready', function() {
