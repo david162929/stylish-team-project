@@ -299,6 +299,7 @@ app.use("/api/", function(req, res, next){
 
 
 /* ---------------Route--------------- */
+//for test
 app.get("/test-upload", (req, res) => {
 	res.render("upload-img");
 });
@@ -339,9 +340,9 @@ app.get("/test-signup", (req, res) => {
 		'content-type':     'application/json'
 	}
 	let data = {
-		"name":"test1",
-		"email":"test1@test.com",
-		"password":"test1"
+		"name":"test2",
+		"email":"test2@test.com",
+		"password":"test2"
 	};
 	
 	// Configure the request
@@ -378,26 +379,87 @@ app.get("/test-signup", (req, res) => {
 	//res.send("POST request done.");
 });
 
+app.get("/test-signin", (req, res) => {
+	// Set the headers
+	let headers = {
+		'User-Agent':       'Super Agent/0.0.1',
+		'content-type':     'application/json'
+	}
+	let data = {
+		"provider":"native",
+		"email":"test2@test.com",
+		"password":"test2"
+	};
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/signin',
+		method: 'POST',
+		headers: headers,
+		json:data
+	}
 
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
+});
 
+//Upload avatar api
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
 	console.log(req.body);
-	
 	console.log("got upload img.");
 	
-	let imgPath = "https://nimabachi.com/uploads/" + req.file.filename;
+	let imgPath = "https://davidadm.com/uploads/" + req.file.filename;
 	console.log(imgPath);
+		
+	//check accessToken
+	console.log(req.headers);
+	let authorization = "Bearer 8c81ba6db595749703fcfdc97e266dd2f9b17b80f2c95e6efe0754d2233fcae6";
+	//let authorization = req.headers.authorization;
 	
-	//做完會員系統要回來做身分驗證
-	let email = "padalab@gmail.com";
-	
-	//insert database
-	let result1 = await sqlQuery(`UPDATE user SET img_upload = "${imgPath}" WHERE email = "${email}"`);
-	console.log(result1.affectedRows + " record(s) updated");
-	
-	
-	res.send("OK");
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization, authorization[0], authorization[1]);
+		//check Bearer
+		if(authorization[0] === "Bearer") {
+			let result1 = await sqlQuery(`SELECT COUNT(*) FROM user WHERE access_token = "${authorization[1]}"`);
+			result1 = result1[0]["COUNT(*)"];
+			//check token in database
+			if (result1 != 0) {
+				let result2 = await sqlQuery(`SELECT access_expired FROM user WHERE access_token = "${authorization[1]}"`);
+				result2 = result2[0]["access_expired"];
+				console.log(result1, result2, Date.now());
+				//check expired date in database
+				if (Date.now() < result2) {
+					//succeed
+					//insert img path in database
+					let result3 = await sqlQuery(`UPDATE user SET img_upload = "${imgPath}" WHERE access_token = "${authorization[1]}"`);
+					console.log(result3.affectedRows + " record(s) updated");
+					
+					res.send(result3.affectedRows + " record(s) updated");
+				}
+				else {
+					res.send(errorFormat("expired token."));
+				}
+			}
+			else {
+				res.send(errorFormat("Wrong token."));
+			}			
+		}
+		else {
+			res.send(errorFormat("Please use Bearer schemes."));
+		}
+	}
+	else {
+		res.send(errorFormat("authorization is required."));
+	}
 });
 
 // Admin API
@@ -660,6 +722,7 @@ app.post("/api/"+cst.API_VERSION+"/user/signin", function(req, res){
 			if(error){
 				throw error;
 			}
+			console.log(data.email,data.password);
 			mysql.con.query("select * from user where email = ? and password = ?", [data.email,data.password], function(error, results, fields){
 				if(error){
 					res.send({error:"Database Query Error"});
