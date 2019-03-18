@@ -436,7 +436,32 @@ app.get("/test-get-profile", (req, res) => {
 	res.send(x); */	
 });
 
-//Upload avatar api
+app.get("/test-favor-s", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer ecaddecb09fd6d6fbaa93e7e92d383dff6194c4d5cb676f4c7e3c72c4f8c21de"
+	}
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/favorite-save?id=201807202140',
+		method: 'GET',
+		headers: headers
+	}
+	
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+		
+	});
+	
+});
+
+
+//Upload avatar API
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
 	console.log(req.body);
@@ -487,6 +512,246 @@ app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 		res.send(errorFormat("authorization is required."));
 	}
 });
+
+/* --------------- Favorite product API --------------- */
+app.get("/api/1.0/user/favorite-save", async (req, res) => {
+	console.log(req.query.id);
+	const productId = req.query.id;
+	
+	//check accessToken
+	console.log(req.headers);
+	let authorization = req.headers.authorization;
+	
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization[0], authorization[1]);
+		try {
+			//check Bearer
+			if(authorization[0] === "Bearer") {
+				let result1 = await sqlQuery(`SELECT COUNT(*) FROM user WHERE access_token = "${authorization[1]}"`);
+				result1 = result1[0]["COUNT(*)"];
+				//check token in database
+				if (result1 != 0) {
+					let result2 = await sqlQuery(`SELECT id, access_expired FROM user WHERE access_token = "${authorization[1]}"`);
+					const userId = result2[0].id;
+					result2 = result2[0]["access_expired"];
+					console.log(result1, result2, Date.now());
+					//check expired date in database
+					if (Date.now() < result2) {
+						//succeed
+						//insert product id in database
+						//check table favorite
+						let result3 = await sqlQuery(`SELECT id FROM favorite WHERE user_id = "${userId}"`);
+						console.log(result3);
+						if (result3.length == 0) {
+							//add user in favorite
+							let result4 = await sqlQuery(`INSERT INTO favorite (user_id) values ("${userId}")`);
+							console.log("1 record inserted(table favorite), ID: " + result4.insertId);
+							//add product id in favorite_product
+							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}"`);
+							result5 = result5[0]["COUNT(*)"];
+							console.log(result5);
+							//check product_id in table favorite_product
+							if (result5 === 0) {
+								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${result4.insertId}", "${productId}")`);
+								console.log("1 record inserted(table favorite_product), ID: " + result6.insertId);
+								//response all favorite product list
+								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result4.insertId}"`);
+								
+								//correct format
+								let arrayFin = [];								
+								for (let i=0; i<result7.length; i++) {
+									arrayFin.push(result7[i].product_id);
+								}
+								res.send(dataFormat({"id":arrayFin}));
+							}
+							else {
+								//response all favorite product list
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result4.insertId}"`);
+								
+								//correct format
+								let arrayFin = [];								
+								for (let i=0; i<result6.length; i++) {
+									arrayFin.push(result6[i].product_id);
+								}
+								res.send(dataFormat({"id":arrayFin}));
+							}
+						}
+						else {
+							//add product id in favorite_product
+							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}"`);
+							result5 = result5[0]["COUNT(*)"];
+							console.log(result5);
+							//check product_id in table favorite_product
+							if (result5 === 0) {
+								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${result3[0].id}", "${productId}")`);
+								console.log("1 record inserted(table favorite_product), ID: " + result6.insertId);
+								//response all favorite product list
+								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3[0].id}"`);
+								
+								//correct format
+								let arrayFin = [];								
+								for (let i=0; i<result7.length; i++) {
+									arrayFin.push(result7[i].product_id);
+								}
+								res.send(dataFormat({"id":arrayFin}));
+							}
+							else {
+								//response all favorite product list
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3[0].id}"`);
+								
+								//correct format
+								let arrayFin = [];								
+								for (let i=0; i<result6.length; i++) {
+									arrayFin.push(result6[i].product_id);
+								}
+								res.send(dataFormat({"id":arrayFin}));
+							}
+						}
+					}
+					else {
+						res.send(errorFormat("Expired token."));
+					}
+				}
+				else {
+					res.send(errorFormat("Wrong token."));
+				}			
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}catch(e) {
+			res.send(e);
+		}
+	}
+	else {
+		res.send(errorFormat("Authorization is required."));
+	}
+});
+
+app.get("/api/1.0/user/favorite-delete", async (req, res) => {
+	console.log(req.query.id);
+	const productId = req.query.id;
+	
+	//check accessToken
+	console.log(req.headers);
+	let authorization = req.headers.authorization;
+	
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization[0], authorization[1]);
+		try {
+			//check Bearer
+			if(authorization[0] === "Bearer") {
+				let result1 = await sqlQuery(`SELECT COUNT(*) FROM user WHERE access_token = "${authorization[1]}"`);
+				result1 = result1[0]["COUNT(*)"];
+				//check token in database
+				if (result1 != 0) {
+					let result2 = await sqlQuery(`SELECT id, access_expired FROM user WHERE access_token = "${authorization[1]}"`);
+					const userId = result2[0].id;
+					result2 = result2[0]["access_expired"];
+					console.log(result1, result2, Date.now());
+					//check expired date in database
+					if (Date.now() < result2) {
+						//succeed
+						//check table favorite_product
+						let result3 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE user_id = "${userId}"`);
+						console.log(result3);
+						if (result3.length == 0) {
+							//Can't find product id
+							res.send(errorFormat("Can't find product id."));
+						}
+						else {
+							//delete product in database
+							let result4 = await sqlQuery(`DELETE FROM favorite_product WHERE product_id = "${productId}"`);
+							console.log(result4.affectedRows + " record deleted.");
+							res.send(result4.affectedRows + " record deleted.");
+						}
+					}
+					else {
+						res.send(errorFormat("Expired token."));
+					}
+				}
+				else {
+					res.send(errorFormat("Wrong token."));
+				}			
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}catch(e) {
+			res.send(e);
+		}
+	}
+	else {
+		res.send(errorFormat("Authorization is required."));
+	}
+});
+
+app.get("/api/1.0/user/favorite-get", async (req, res) => {
+	//check accessToken
+	console.log(req.headers);
+	let authorization = req.headers.authorization;
+	
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization[0], authorization[1]);
+		try {
+			//check Bearer
+			if(authorization[0] === "Bearer") {
+				let result1 = await sqlQuery(`SELECT COUNT(*) FROM user WHERE access_token = "${authorization[1]}"`);
+				result1 = result1[0]["COUNT(*)"];
+				//check token in database
+				if (result1 != 0) {
+					let result2 = await sqlQuery(`SELECT id, access_expired FROM user WHERE access_token = "${authorization[1]}"`);
+					const userId = result2[0].id;
+					result2 = result2[0]["access_expired"];
+					console.log(result1, result2, Date.now());
+					//check expired date in database
+					if (Date.now() < result2) {
+						//succeed
+						let result3 = await sqlQuery(`SELECT id FROM favorite WHERE user_id = "${userId}"`);
+						console.log(result3);
+						//check table favorite
+						if (result3.length == 0) {
+							res.send("You don't have any products in your favorite product list.");
+						}
+						else {
+							result3 = result3[0].id;
+							//get all product
+							let result4 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3}"`);
+							if (result4.length == 0) {
+								res.send("You don't have any products in your favorite product list.");
+							}
+							else {
+								console.log(result4);
+								res.send(dataFormat(""));
+							}
+						}
+					}
+					else {
+						res.send(errorFormat("Expired token."));
+					}
+				}
+				else {
+					res.send(errorFormat("Wrong token."));
+				}			
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}catch(e) {
+			res.send(e);
+		}
+	}
+	else {
+		res.send(errorFormat("Authorization is required."));
+	}
+});
+
 
 // Admin API
 app.post("/api/"+cst.API_VERSION+"/admin/product", function(req, res){
