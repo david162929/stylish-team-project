@@ -420,8 +420,7 @@ app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 		
 	//check accessToken
 	console.log(req.headers);
-	let authorization = "Bearer 8c81ba6db595749703fcfdc97e266dd2f9b17b80f2c95e6efe0754d2233fcae6";
-	//let authorization = req.headers.authorization;
+	let authorization = req.headers.authorization;
 	
 	//check authorization
 	if (authorization) {
