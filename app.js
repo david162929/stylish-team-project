@@ -1059,6 +1059,19 @@ function sqlQuery (query1) {
 	});
 };
 
+/* ---------------Response Format--------------- */
+//data format
+function dataFormat (str) {
+	str = {data: str};
+	return JSON.stringify(str);
+}
+
+//error massage format
+function errorFormat (str) {
+	str = {error: str};
+	return JSON.stringify(str);
+}
+
 
 
 module.exports=app;
