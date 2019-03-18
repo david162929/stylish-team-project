@@ -409,6 +409,33 @@ app.get("/test-signin", (req, res) => {
 	})
 });
 
+app.get("/test-get-profile", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer b6cd84c77142c109a22979a23082c1735dc90790fbe7bca85d6cf0e857ffe0cd"
+	}
+
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/profile',
+		method: 'GET',
+		headers: headers,
+	}
+
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
+	
+/* 	let x = HttpRequest(headers, options);
+	console.log(x);
+	res.send(x); */	
+});
+
 //Upload avatar api
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
@@ -770,6 +797,14 @@ app.post("/api/"+cst.API_VERSION+"/user/signin", function(req, res){
 						access_token:accessToken,
 						access_expired:now+(30*24*60*60*1000) // 30 days
 					};
+					//check img_upload
+					if (results[0].img_upload != undefined) {
+						user.picture = results[0].img_upload
+					}
+					else {
+						user.picture = results[0].picture;
+					}
+					
 					let query="update user set access_token = ?, access_expired = ? where id = ?";
 					mysql.con.query(query, [user.access_token, user.access_expired, user.id], function(error, results, fields){
 						if(error){
@@ -897,13 +932,22 @@ app.get("/api/"+cst.API_VERSION+"/user/profile", function(req, res){
 			if(results.length===0){
 				res.send({error:"Invalid Access Token"});
 			}else{
-				res.send({data:{
+				const user = {
 					id:results[0].id,
 					provider:results[0].provider,
 					name:results[0].name,
 					email:results[0].email,
 					picture:results[0].picture
-				}});
+				}				
+				//check img_upload
+				if (results[0].img_upload != undefined) {
+					user.picture = results[0].img_upload
+				}
+				else {
+					user.picture = results[0].picture;
+				}
+				
+				res.send({data:user});
 			}
 		}
 	});
