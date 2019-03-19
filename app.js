@@ -340,9 +340,9 @@ app.get("/test-signup", (req, res) => {
 		'content-type':     'application/json'
 	}
 	let data = {
-		"name":"test2",
-		"email":"test2@test.com",
-		"password":"test2"
+		"name":"test4",
+		"email":"test4@test.com",
+		"password":"test4"
 	};
 	
 	// Configure the request
@@ -439,12 +439,60 @@ app.get("/test-get-profile", (req, res) => {
 app.get("/test-favor-s", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer ecaddecb09fd6d6fbaa93e7e92d383dff6194c4d5cb676f4c7e3c72c4f8c21de"
+		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/favorite-save?id=201807202140',
+		url: 'http://localhost:3000/api/1.0/user/favorite-save?id=201807242211',
+		method: 'GET',
+		headers: headers
+	}
+	
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+		
+	});
+	
+});
+
+app.get("/test-favor-d", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
+	}
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/favorite-delete?id=201807201824',
+		method: 'GET',
+		headers: headers
+	}
+	
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+		
+	});
+	
+});
+
+app.get("/test-favor-g", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29"
+	}
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/user/favorite-get',
 		method: 'GET',
 		headers: headers
 	}
@@ -547,66 +595,49 @@ app.get("/api/1.0/user/favorite-save", async (req, res) => {
 						if (result3.length == 0) {
 							//add user in favorite
 							let result4 = await sqlQuery(`INSERT INTO favorite (user_id) values ("${userId}")`);
+							const favoriteProductId = result4.insertId;
 							console.log("1 record inserted(table favorite), ID: " + result4.insertId);
 							//add product id in favorite_product
-							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}"`);
+							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}" AND id = "${favoriteProductId}"`);
 							result5 = result5[0]["COUNT(*)"];
 							console.log(result5);
 							//check product_id in table favorite_product
 							if (result5 === 0) {
-								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${result4.insertId}", "${productId}")`);
+								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${favoriteProductId}", "${productId}")`);
 								console.log("1 record inserted(table favorite_product), ID: " + result6.insertId);
 								//response all favorite product list
-								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result4.insertId}"`);
-								
-								//correct format
-								let arrayFin = [];								
-								for (let i=0; i<result7.length; i++) {
-									arrayFin.push(result7[i].product_id);
-								}
-								res.send(dataFormat({"id":arrayFin}));
+								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
+
+								res.send(dataFormat({"id":pavoriteFormat(result7)}));
 							}
 							else {
 								//response all favorite product list
-								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result4.insertId}"`);
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
 								
-								//correct format
-								let arrayFin = [];								
-								for (let i=0; i<result6.length; i++) {
-									arrayFin.push(result6[i].product_id);
-								}
-								res.send(dataFormat({"id":arrayFin}));
+								res.send(dataFormat({"id":pavoriteFormat(result6)}));
 							}
 						}
 						else {
+							const favoriteProductId = result3[0].id;
+							console.log(favoriteProductId);
 							//add product id in favorite_product
-							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}"`);
+							let result5 = await sqlQuery(`SELECT COUNT(*) FROM favorite_product WHERE product_id = "${productId}" AND id = "${favoriteProductId}"`);
 							result5 = result5[0]["COUNT(*)"];
 							console.log(result5);
 							//check product_id in table favorite_product
 							if (result5 === 0) {
-								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${result3[0].id}", "${productId}")`);
+								let result6 = await sqlQuery(`INSERT INTO favorite_product (id, product_id) values ("${favoriteProductId}", "${productId}")`);
 								console.log("1 record inserted(table favorite_product), ID: " + result6.insertId);
 								//response all favorite product list
-								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3[0].id}"`);
+								let result7 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
 								
-								//correct format
-								let arrayFin = [];								
-								for (let i=0; i<result7.length; i++) {
-									arrayFin.push(result7[i].product_id);
-								}
-								res.send(dataFormat({"id":arrayFin}));
+								res.send(dataFormat({"id":pavoriteFormat(result7)}));
 							}
 							else {
 								//response all favorite product list
-								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3[0].id}"`);
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
 								
-								//correct format
-								let arrayFin = [];								
-								for (let i=0; i<result6.length; i++) {
-									arrayFin.push(result6[i].product_id);
-								}
-								res.send(dataFormat({"id":arrayFin}));
+								res.send(dataFormat({"id":pavoriteFormat(result6)}));
 							}
 						}
 					}
@@ -656,18 +687,39 @@ app.get("/api/1.0/user/favorite-delete", async (req, res) => {
 					//check expired date in database
 					if (Date.now() < result2) {
 						//succeed
-						//check table favorite_product
-						let result3 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE user_id = "${userId}"`);
+						console.log(userId);
+						//check table favorite
+						let result3 = await sqlQuery(`SELECT id FROM favorite WHERE user_id = "${userId}"`);
 						console.log(result3);
-						if (result3.length == 0) {
-							//Can't find product id
-							res.send(errorFormat("Can't find product id."));
+						if (result3.length === 0) {
+							//do nothing
+							res.send(dataFormat({"id":[]}));
 						}
 						else {
-							//delete product in database
-							let result4 = await sqlQuery(`DELETE FROM favorite_product WHERE product_id = "${productId}"`);
-							console.log(result4.affectedRows + " record deleted.");
-							res.send(result4.affectedRows + " record deleted.");
+							const favoriteProductId = result3[0].id;
+							console.log(favoriteProductId);
+
+							//check table favorite_product
+							let result4 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}" AND product_id = "${productId}"`);
+							console.log(result4);
+							if (result4.length === 0) {
+								//Can't find product id
+								console.log("Can't find product id.");
+								//response all favorite product list
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
+								
+								res.send(dataFormat({"id":pavoriteFormat(result6)}));
+							}
+							else {
+								//delete product in database
+								let result5 = await sqlQuery(`DELETE FROM favorite_product WHERE id = "${favoriteProductId}" AND product_id = "${productId}"`);
+								console.log(result5.affectedRows + " record deleted.");
+								
+								//response all favorite product list
+								let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
+								
+								res.send(dataFormat({"id":pavoriteFormat(result6)}));
+							}
 						}
 					}
 					else {
@@ -713,23 +765,22 @@ app.get("/api/1.0/user/favorite-get", async (req, res) => {
 					//check expired date in database
 					if (Date.now() < result2) {
 						//succeed
+						//check table favorite
 						let result3 = await sqlQuery(`SELECT id FROM favorite WHERE user_id = "${userId}"`);
 						console.log(result3);
-						//check table favorite
-						if (result3.length == 0) {
-							res.send("You don't have any products in your favorite product list.");
+						if (result3.length === 0) {
+							//don't find favorite list
+							//do nothing
+							res.send(dataFormat({"id":[]}));
+							
 						}
 						else {
-							result3 = result3[0].id;
-							//get all product
-							let result4 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${result3}"`);
-							if (result4.length == 0) {
-								res.send("You don't have any products in your favorite product list.");
-							}
-							else {
-								console.log(result4);
-								res.send(dataFormat(""));
-							}
+							const favoriteProductId = result3[0].id;
+							console.log(favoriteProductId);
+							//response all favorite product list
+							let result6 = await sqlQuery(`SELECT product_id FROM favorite_product WHERE id = "${favoriteProductId}"`);
+							
+							res.send(dataFormat({"id":pavoriteFormat(result6)}));
 						}
 					}
 					else {
@@ -1380,6 +1431,15 @@ function errorFormat (str) {
 	return JSON.stringify(str);
 }
 
+/* ---------------Favorite Format--------------- */
+function pavoriteFormat (arr) {
+	//correct format
+	const arrayFin = [];								
+	for (let i=0; i<arr.length; i++) {
+		arrayFin.push(arr[i].product_id);
+	}
+	return arrayFin;
+}
 
 
 module.exports=app;
