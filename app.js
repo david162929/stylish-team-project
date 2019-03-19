@@ -300,6 +300,20 @@ app.use("/api/", function(req, res, next){
 
 /* ---------------Route--------------- */
 //for test
+function testVariable () {
+
+/* 	function A () {
+		let tmp = {}
+	} */
+	
+}
+
+	//const testHostName = "http://localhost:3000";
+	const testHostName = "https://davidadm.com";
+	const testAuthorization = "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29";
+	//const testAuthorization = "Bearer iamacoolguyilovetaiwan";
+
+
 app.get("/test", (req, res)=>{
 	res.render("testlist");
 });
@@ -351,7 +365,7 @@ app.get("/test-signup", (req, res) => {
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/signup',
+		url: `${testHostName}/api/1.0/user/signup`,
 		method: 'POST',
 		headers: headers,
 		json:data
@@ -443,27 +457,25 @@ app.get("/test-get-profile", (req, res) => {
 app.get("/test-favor-s", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
+		Authorization: testAuthorization
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/favorite-save?id=201807242211',
+		url: `${testHostName}/api/1.0/user/favorite-save?id=201807242211`,
 		method: 'GET',
 		headers: headers
 	}
 	
 	
-	for (let i=0; i<10; i++) {
-		// Start the request
-		request(options, (error, response, body)=>{
-			if (!error && response.statusCode == 200) {
-				console.log(body);
-				res.send(body);
-			}
-		
-		});
-	}
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+	
+	});
 
 	
 });
@@ -471,12 +483,12 @@ app.get("/test-favor-s", (req, res) => {
 app.get("/test-favor-d", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
+		Authorization: testAuthorization
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/favorite-delete?id=201807242211',
+		url: `${testHostName}/api/1.0/user/favorite-delete?id=201807242211`,
 		method: 'GET',
 		headers: headers
 	}
@@ -495,12 +507,12 @@ app.get("/test-favor-d", (req, res) => {
 app.get("/test-favor-g", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29"
+		Authorization: testAuthorization
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/favorite-get',
+		url: `${testHostName}/api/1.0/user/favorite-get`,
 		method: 'GET',
 		headers: headers
 	}
@@ -567,12 +579,12 @@ app.get("/test-favor-loop", (req, res) => {
 app.get("/test-video-g", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29"
+		Authorization: testAuthorization
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/products/video-get?id=201807201824',
+		url: `${testHostName}/api/1.0/products/video-get?id=201807201824`,
 		method: 'GET',
 		headers: headers
 	}
@@ -590,12 +602,12 @@ app.get("/test-video-g", (req, res) => {
 app.get("/test-video-a", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer iamacoolguyilovetaiwan"
+		Authorization: testAuthorization
 	}
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/products/video-add?id=201807201824&link=https://www.youtube.com/embed/Tas1h6rqHDE',
+		url: `${testHostName}/api/1.0/products/video-add?id=201807201824&link=https://www.youtube.com/embed/Tas1h6rqHDE`,
 		method: 'GET',
 		headers: headers
 	}
@@ -1620,7 +1632,7 @@ function pavoriteFormat (arr) {
 
 
 /* ---------------Error--------------- */
-//catch 404 error
+/* //catch 404 error
 app.use((req, res)=>{
 	res.status(404).send("沒有找到頁面ㄏㄏ");
 });
@@ -1633,7 +1645,7 @@ app.use((err, req, res, next) => {
 	}
 	res.statusCode(err.statusCode).send(err.message);
 });
-
+ */
 
 module.exports=app;
 // git password: af7258ba52ea0bd3756239234f5f46812cc57510 
