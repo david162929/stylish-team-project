@@ -300,6 +300,10 @@ app.use("/api/", function(req, res, next){
 
 /* ---------------Route--------------- */
 //for test
+app.get("/test", (req, res)=>{
+	res.render("testlist");
+});
+
 app.get("/test-upload", (req, res) => {
 	res.render("upload-img");
 });
@@ -449,14 +453,18 @@ app.get("/test-favor-s", (req, res) => {
 		headers: headers
 	}
 	
-	// Start the request
-	request(options, (error, response, body)=>{
-		if (!error && response.statusCode == 200) {
-			console.log(body);
-			res.send(body);
-		}
+	
+	for (let i=0; i<10; i++) {
+		// Start the request
+		request(options, (error, response, body)=>{
+			if (!error && response.statusCode == 200) {
+				console.log(body);
+				res.send(body);
+			}
 		
-	});
+		});
+	}
+
 	
 });
 
@@ -468,7 +476,7 @@ app.get("/test-favor-d", (req, res) => {
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/favorite-delete?id=201807201824',
+		url: 'http://localhost:3000/api/1.0/user/favorite-delete?id=201807242211',
 		method: 'GET',
 		headers: headers
 	}
@@ -507,6 +515,101 @@ app.get("/test-favor-g", (req, res) => {
 	});
 	
 });
+
+app.get("/test-favor-loop", (req, res) => {
+	// Set the headers
+	let headerA = {
+		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
+	}
+	
+	// Configure the request
+	let optionA = {
+		url: 'http://localhost:3000/api/1.0/user/favorite-save?id=201807242211',
+		method: 'GET',
+		headers: headerA
+	}
+	
+	// Set the headers
+	let headerB = {
+		Authorization: "Bearer dc8f3175bf11b0d3ee31434ec092c135717fd55a8f9e1e4bc730da79e8e7b433"
+	}
+	
+	// Configure the request
+	let optionB = {
+		url: 'http://localhost:3000/api/1.0/user/favorite-delete?id=201807242211',
+		method: 'GET',
+		headers: headerB
+	}
+	
+
+		
+	
+	for (let i=0; i<1; i++) {
+		// Start the request
+		request(optionA, (error, response, body)=>{
+			if (!error && response.statusCode == 200) {
+				console.log(body);
+				//res.send(body);
+			}		
+		});
+		// Start the request
+		request(optionB, (error, response, body)=>{
+			if (!error && response.statusCode == 200) {
+				console.log(body);
+				//res.send(body);
+			}
+			
+		});
+	}
+	res.redirect("/test");
+});
+
+app.get("/test-video-g", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29"
+	}
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/products/video-get?id=201807201824',
+		method: 'GET',
+		headers: headers
+	}
+	
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+		
+	});
+});
+
+app.get("/test-video-a", (req, res) => {
+	// Set the headers
+	let headers = {
+		Authorization: "Bearer iamacoolguyilovetaiwan"
+	}
+	
+	// Configure the request
+	let options = {
+		url: 'http://localhost:3000/api/1.0/products/video-add?id=201807201824&link=https://www.youtube.com/embed/Tas1h6rqHDE',
+		method: 'GET',
+		headers: headers
+	}
+	
+	// Start the request
+	request(options, (error, response, body)=>{
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.send(body);
+		}
+		
+	});
+});
+
 
 
 //Upload avatar API
@@ -800,6 +903,69 @@ app.get("/api/1.0/user/favorite-get", async (req, res) => {
 	}
 	else {
 		res.send(errorFormat("Authorization is required."));
+	}
+});
+
+/* --------------- Product Video API --------------- */
+app.get("/api/1.0/products/video-get", (req, res) => {
+	const productId = req.query.id;
+	
+	sqlQuery(`SELECT video_link FROM product WHERE id = "${productId}"`)
+	.then((result1)=>{
+		const videoLink = result1[0].video_link;
+		res.send(dataFormat([`${videoLink}`]));
+	})
+	.catch((err)=>{
+		res.send(errorFormat(err));
+	});
+	
+});
+
+app.get("/api/1.0/products/video-add", (req, res) => {
+	const productId = req.query.id;
+	const videoLink = req.query.link;
+	const authorization = req.headers.authorization;
+	
+	//check id and link
+	if (productId && videoLink) {
+		//check authorization
+		if (authorization) {
+			const superToken = authorization.split(" ");
+			console.log(superToken);
+			//check Bearer
+			if(superToken[0] === "Bearer") {
+				//check super token
+				if (superToken[1] === "iamacoolguyilovetaiwan") {
+					//UPDATE link in product table
+					sqlQuery(`UPDATE product SET video_link = "${videoLink}" WHERE id = "${productId}"`)
+					.then((result1)=>{
+						console.log(result1.affectedRows + " record(s) updated.");
+					})
+					.then(()=>{
+						sqlQuery(`SELECT video_link FROM product WHERE id = "${productId}"`)
+						.then((result1)=>{
+							const videoLink = result1[0].video_link;
+							res.send(dataFormat([`${videoLink}`]));
+						});
+					})
+					.catch((err)=>{
+						res.send(err);
+					});
+				}
+				else{
+					res.send("Permission denied.");
+				}
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}
+		else {
+			res.send(errorFormat("Authorization is required."));
+		}
+	}
+	else {
+		res.send(errorFormat("Please enter product id and link in query string."));
 	}
 });
 
@@ -1418,6 +1584,16 @@ function sqlQuery (query1) {
 	});
 };
 
+/* //Use Promise for MySQL .query() with transaction
+function sqlQueryTransaction (query1) {
+	return new Promise ((reso, rej)=>{
+		
+		mysql.con.query();
+	}); 
+} */
+
+
+
 /* ---------------Response Format--------------- */
 //data format
 function dataFormat (str) {
@@ -1440,6 +1616,23 @@ function pavoriteFormat (arr) {
 	}
 	return arrayFin;
 }
+
+
+
+/* ---------------Error--------------- */
+//catch 404 error
+app.use((req, res)=>{
+	res.status(404).send("沒有找到頁面ㄏㄏ");
+});
+
+//error handler
+app.use((err, req, res, next) => {
+	console.err(err);
+	if (!err.statusCode) {
+		err.statusCode = 500;
+	}
+	res.statusCode(err.statusCode).send(err.message);
+});
 
 
 module.exports=app;
