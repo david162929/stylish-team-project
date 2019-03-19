@@ -335,7 +335,7 @@ app.get("/test-postfb", (req, res) => {
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/signin',
+		url: `${testHostName}/api/1.0/user/signin`,
 		method: 'POST',
 		headers: headers,
 		json:data
@@ -358,9 +358,9 @@ app.get("/test-signup", (req, res) => {
 		'content-type':     'application/json'
 	}
 	let data = {
-		"name":"test4",
-		"email":"test4@test.com",
-		"password":"test4"
+		"name":"test5",
+		"email":"test5@test.com",
+		"password":"test5"
 	};
 	
 	// Configure the request
@@ -411,7 +411,7 @@ app.get("/test-signin", (req, res) => {
 	
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/signin',
+		url: `${testHostName}/api/1.0/user/signin`,
 		method: 'POST',
 		headers: headers,
 		json:data
@@ -430,12 +430,12 @@ app.get("/test-signin", (req, res) => {
 app.get("/test-get-profile", (req, res) => {
 	// Set the headers
 	let headers = {
-		Authorization: "Bearer b6cd84c77142c109a22979a23082c1735dc90790fbe7bca85d6cf0e857ffe0cd"
+		Authorization: testAuthorization
 	}
 
 	// Configure the request
 	let options = {
-		url: 'http://localhost:3000/api/1.0/user/profile',
+		url: `${testHostName}/api/1.0/user/profile`,
 		method: 'GET',
 		headers: headers,
 	}
