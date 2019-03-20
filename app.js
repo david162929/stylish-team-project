@@ -309,10 +309,10 @@ function testVariable () {
 	
 }
 
-	//const testHostName = "http://localhost:3000";
-	const testHostName = "https://davidadm.com";
-	const testAuthorization = "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29";
-	//const testAuthorization = "Bearer iamacoolguyilovetaiwan";
+const testHostName = "http://localhost:3000";
+//const testHostName = "https://davidadm.com";
+//const testAuthorization = "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29";
+const testAuthorization = "Bearer iamacoolguyilovetaiwan";
 
 
 app.get("/test", (req, res)=>{
@@ -359,9 +359,9 @@ app.get("/test-signup", (req, res) => {
 		'content-type':     'application/json'
 	}
 	let data = {
-		"name":"test5",
-		"email":"test5@test.com",
-		"password":"test5"
+		"name":"大衛陳",
+		"email":"en16292902@gmail.com",
+		"password":"12345"
 	};
 	
 	// Configure the request
@@ -406,8 +406,8 @@ app.get("/test-signin", (req, res) => {
 	}
 	let data = {
 		"provider":"native",
-		"email":"test2@test.com",
-		"password":"test2"
+		"email":"en16292902@gmail.com",
+		"password":"12345"
 	};
 	
 	// Configure the request
@@ -624,29 +624,34 @@ app.get("/test-video-a", (req, res) => {
 });
 
 app.get("/test-mail", (req, res)=>{
-	const transporter = nodemailer.createTransport({
+/* 	const transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
 			user: "en162929@gmail.com",
-			pass: "d8335083350"
+			pass: "mdcumxaqmvkxjvon"
 		}
-	});
+	}); */
 	
-/* 	const transporter = nodemailer.createTransport( {
+	const transporter = nodemailer.createTransport( {
 			host: 'smtp.gmail.com',
 			secureConnecton: true,
 			port: 587,
 			auth: {
 			user: "en162929@gmail.com",
-			pass: "d8335083350"
+			pass: "peapzayqccphviun"
 		}
-	}); */
+	});
+	
+	let html = "<h1>Welcome!</h1><p>感謝您的購買!</p>";
+	
 	const mailOptions = {
 		from: "en162929@gmail.com",
 		to:"en162929@gmail.com",
 		subject: "Sending Email using Node.js",
-		text: "test OK"
+		html: html
 	};
+	
+	
 	
 	transporter.sendMail(mailOptions, (err, info)=>{
 		if (err) {
@@ -663,6 +668,35 @@ app.get("/test-mail", (req, res)=>{
 app.get("/test1", (req, res)=> {
 	let html = fs.readFileSync("./public/test-fetch.html", "utf8");
 	res.send(html);
+});
+
+app.get("/test-email-s", (req, res) => {
+	// Set the headers
+	let headers = {
+		'content-type':     'application/json',
+		authorization: testAuthorization
+	}
+	let data = {
+		"user_token":"80018e24d600b79272e7a602d71d16bb0a7e214f306239f72d2cae4065d6de39",
+		"order_number":"125334407290"
+	};
+	
+	// Configure the request
+	let options = {
+		url: `${testHostName}/api/1.0/admin/email-send`,
+		method: 'POST',
+		headers: headers,
+		json:data
+	}
+
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
 });
 
 
@@ -1022,6 +1056,94 @@ app.get("/api/1.0/products/video-add", (req, res) => {
 		res.send(errorFormat("Please enter product id and link in query string."));
 	}
 });
+
+/* --------------- Email API --------------- */
+app.post("/api/1.0/admin/email-send", async(req, res) => {
+	const userToken = req.body.user_token;
+	const orderNumber = req.body.order_number;
+	console.log(userToken, orderNumber);
+	
+	//check accessToken
+	let authorization = req.headers.authorization;
+	
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization[0], authorization[1]);
+		try {
+			//check Bearer
+			if(authorization[0] === "Bearer") {
+				//check token 
+				if (authorization[1] === "iamacoolguyilovetaiwan") {
+					//check req.headers and req.body
+					if (req.headers['content-type'] === 'application/json' && userToken && orderNumber) {
+						//get userName
+						let result1 = await sqlQuery(`SELECT id, email, name FROM user WHERE access_token = "${userToken}"`);
+						console.log(result1);
+						const userName = result1[0].name;
+						const userEmail = result1[0].email;
+						
+						//get order
+						let result2 = await sqlQuery(`SELECT number, details FROM order_table WHERE number = "${orderNumber}"`);
+						console.log(result2);
+						const orderDetails = JSON.stringify(result2[0].details, null, 4);
+						
+						const transporter = nodemailer.createTransport( {
+								host: 'smtp.gmail.com',
+								secureConnecton: true,
+								port: 587,
+								auth: {
+								user: "en162929@gmail.com",
+								pass: "peapzayqccphviun"
+							}
+						});
+						
+						let html = `<h1>Welcome! ${userName}</h1><h2>感謝您的購買!</h2><br><h3>您的訂單編號：</h3><br><p>${orderNumber}</p><br><h3>訂單內容：</h3><br><p>${orderDetails}</p>`;
+						
+						const mailOptions = {
+							from: "en162929@gmail.com",
+							to: `${userEmail}`,
+							subject: "Stylish 感謝您的購買",
+							html: html
+						};
+						
+						
+						
+						transporter.sendMail(mailOptions, (err, info)=>{
+							if (err) {
+								console.log(err);
+								res.send(err);
+							}
+							else {
+								console.log("Email sent: "+ info.response);
+								res.send(dataFormat("Send succeed."));
+							}
+						});
+						
+					}
+					else {
+						res.send(errorFormat("Wrong headers or body."));
+					}
+				}
+				else {
+					res.send(errorFormat("Wrong token."));
+				}			
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}catch(e) {
+			res.send(e);
+		}
+	}
+	else {
+		res.send(errorFormat("Authorization is required."));
+	}
+	
+
+});
+
+
 
 
 // Admin API
