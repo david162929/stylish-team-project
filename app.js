@@ -632,11 +632,22 @@ app.get("/test-mail", (req, res)=>{
 		}
 	});
 	const mailOptions = {
-		from: "",
-		to:"",
-		subject: "",
-		text: ""
+		from: "en162929@gmail",
+		to:"en162929@gmail",
+		subject: "Sending Email using Node.js",
+		text: "test OK"
 	};
+	
+	transporter.sendMail(mailOptions, (err, info)=>{
+		if (error) {
+			console.log(error);
+			res.send(error);
+		}
+		else {
+			console.log("Email sent: "+ info.response);
+			res.send(info.response);
+		}
+	});
 });
 
 //Upload avatar API
@@ -1654,7 +1665,7 @@ app.use((req, res)=>{
 
 //error handler
 app.use((err, req, res, next) => {
-	console.err(err);
+	console.log(err);
 	if (!err.statusCode) {
 		err.statusCode = 500;
 	}
