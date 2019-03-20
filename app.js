@@ -1658,7 +1658,7 @@ function pavoriteFormat (arr) {
 
 
 /* ---------------Error--------------- */
-//catch 404 error
+/* //catch 404 error
 app.use((req, res)=>{
 	res.status(404).send("沒有找到頁面ㄏㄏ");
 });
@@ -1670,7 +1670,7 @@ app.use((err, req, res, next) => {
 		err.statusCode = 500;
 	}
 	res.statusCode(err.statusCode).send(err.message);
-});
+}); */
 
 
 module.exports=app;
