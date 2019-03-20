@@ -1274,6 +1274,7 @@ app.post("/api/"+cst.API_VERSION+"/user/signup", function(req, res){
 });
 
 app.post("/api/"+cst.API_VERSION+"/user/signin", function(req, res){
+	
 	let data=req.body;
 	if(data.provider==="native"){
 		if(!data.email||!data.password){
@@ -1676,6 +1677,7 @@ function pavoriteFormat (arr) {
 /* ---------------Error--------------- */
 //catch 404 error
 app.use((req, res)=>{
+	console.log("adslhhadsglsadhg");
 	res.status(404).send("Page not found.");
 });
 
