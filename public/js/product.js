@@ -230,6 +230,21 @@ function Listlist() {
 	}
 }
 
+//拿 cookies
+function getCookies(name) {
+	let result = null;
+	cookies = document.cookie.split('; ');
+	cookies.forEach(element => {
+		if (element.indexOf(name) >= 0) {
+			result = element.split('=')[1];
+			//去拿 value
+		}
+	});
+
+	return result; // null if not found
+}
+
+
 //like button
 function likeButton() {
 	console.log('likeButton')
