@@ -1676,7 +1676,7 @@ function pavoriteFormat (arr) {
 /* ---------------Error--------------- */
 /* //catch 404 error
 app.use((req, res)=>{
-	res.status(404).send("沒有找到頁面ㄏㄏ");
+	res.status(404).send("Page not found.");
 });
 
 //error handler

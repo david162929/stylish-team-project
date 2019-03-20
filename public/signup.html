@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Stylish 註冊登入頁面</title>
+	<link rel="stylesheet" type="text/css" href="css/signup.css" media="all" />
+	<script src="js/lib.js"></script>
+
+</head>
+
+<body>
+	<header>
+		<div class="padding-mobile"></div>
+		<div class="logo"><a href="./"><img src="imgs/logo.png" /></a></div>
+		<nav>
+			<div class="item"><a href="./?tag=women">女裝</a></div>
+			<div class="item"><a href="./?tag=men">男裝</a></div>
+			<div class="item"><a href="./?tag=accessories">配件</a></div>
+		</nav>
+		<div class="feature">
+			<form class="item" action="./">
+				<input type="text" class="search" name="tag" />
+			</form>
+			<a href="cart.html" class="item cart">
+				<div id="cart-qty" class="qty"></div>
+			</a>
+			<div class="item member">
+				<img src="imgs/member.png" />
+			</div>
+		</div>
+	</header>
+	<nav class="mobile">
+		<div class="item"><a href="./?tag=women">女裝</a></div>
+		<div class="item"><a href="./?tag=men">男裝</a></div>
+		<div class="item"><a href="./?tag=accessories">配件</a></div>
+	</nav>
+	<div class="padding-header-mobile"></div>
+	<div class="feature-mobile">
+		<a class="item" href="cart.html">
+			<div class="cart">
+				<div id="cart-qty-mobile" class="qty"></div>
+			</div>
+			購物車
+		</a>
+		<div class="item member">
+			<img src="imgs/member-mobile.png" />
+			會員
+		</div>
+	</div>
+	<main>
+		<div class="view">
+			<h2 class="headline">會員登入</h2>
+		</div>
+		<div class="login">
+			<div class="LoginTableMain">
+				<div class="tdLeft">
+					<h2 class="headline">SIGN IN</h2>
+					<h3 class="comment">登入會員即可結帳</h3>
+					<div class="details" id="profile-details">
+						<div class="account">
+							<div class="loginF1">會員帳號/ACCOUNT(填入 email)</div>
+							<div class="loginF2">
+								<input id="loginAccount">
+							</div>
+						</div>
+						<div class="password">
+							<div class="loginF1">會員密碼/PASSWORD</div>
+							<div class="loginF2">
+								<input id="loginPassword">
+							</div>
+						</div>
+						<div class="signin_button">
+							<div class="loginF2">
+								<button id="sign1" class="sign_in1">登入/SIGN IN</button>
+							</div>
+						</div>
+						<div class="FbButton">
+							<div class="fb-login-button" data-size="small" data-button-type="login_with" data-auto-logout-link="true"
+							 data-onlogin="checkFacebookLogin()" data-use-continue-as="false" data-scope="email"></div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="tdright">
+					<div>
+						<h2 class="headline">CREATE AN ACCOUNT</h2>
+						<h3 class="comment">註冊加入官網會員</h3>
+						<div class="details" id="profile-details">
+							<div class="account_name">
+								<div class="loginF1">姓名/NAME</div>
+								<div class="loginF2">
+									<input id="login-name">
+								</div>
+							</div>
+							<div class="account">
+								<div class="loginF1">會員帳號/ACCOUNT(填入email)</div>
+								<div class="loginF2">
+									<input id="login-account">
+								</div>
+							</div>
+							<div class="password">
+								<div class="loginF1">會員密碼/PASSWORD</div>
+								<div class="loginF2">
+									<input id="login-password">
+								</div>
+							</div>
+							<div class="signin_button">
+								<div class="loginF2">
+									<button id="signUpButton" class="sign_in1">加入會員/REGISTER</button>
+									<div id="signUpContent"></div>
+								</div>
+							</div>
+							<div class="FbButton">
+								<div class="fb-login-button" data-size="small" data-button-type="login_with" data-auto-logout-link="true"
+								 data-onlogin="checkFacebookLogin()" data-use-continue-as="false" data-scope="email"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+	</main>
+	<footer>
+		<div class="view">
+			<div class="link link-0">
+				<div class="item">關於 Stylish</div>
+				<div class="item">服務條款</div>
+				<div class="item">隱私政策</div>
+			</div>
+			<div class="link link-1">
+				<div class="item">聯絡我們</div>
+				<div class="item">FAQ</div>
+			</div>
+			<div class="social">
+				<img src="imgs/line.png" />
+				<img src="imgs/twitter.png" />
+				<img src="imgs/facebook.png" />
+			</div>
+			<div class="copyright">
+				&copy; 2018. All rights reserved.
+			</div>
+		</div>
+	</footer>
+	<div id="loading" class="loading">
+		<img src="imgs/loading.gif" />
+	</div>
+
+	<script src="js/signup.js"></script>
+</body>
+
+</html>

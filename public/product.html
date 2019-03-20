@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stylish 產品資訊</title>
-<link rel="stylesheet" type="text/css" href="css/product.css" media="all" />
-<script src="js/lib.js"></script>
-<script src="js/product.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Stylish 產品資訊</title>
+	<link rel="stylesheet" type="text/css" href="css/product.css" media="all" />
+	<script src="js/lib.js"></script>
+	<script src="js/product.js"></script>
 </head>
+
 <body>
 	<header>
 		<div class="padding-mobile"></div>
@@ -21,7 +23,9 @@
 			<form class="item" action="./">
 				<input type="text" class="search" name="tag" />
 			</form>
-			<a href="cart.html" class="item cart"><div id="cart-qty" class="qty"></div></a>
+			<a href="cart.html" class="item cart">
+				<div id="cart-qty" class="qty"></div>
+			</a>
 			<div class="item member">
 				<img src="imgs/member.png" />
 			</div>
@@ -35,7 +39,9 @@
 	<div class="padding-header-mobile"></div>
 	<div class="feature-mobile">
 		<a class="item" href="cart.html">
-			<div class="cart"><div id="cart-qty-mobile" class="qty"></div></div>
+			<div class="cart">
+				<div id="cart-qty-mobile" class="qty"></div>
+			</div>
 			購物車
 		</a>
 		<div class="item member">
@@ -45,8 +51,13 @@
 	</div>
 	<main>
 		<div class="view">
-			<div id="product-main-image"class="main-image"></div>
+			<div id="product-main-image" class="main-image"></div>
 			<div class="details">
+				<div class="likeList">
+					<button class="like-btn" id="like"></button>
+					<div class="listlist">喜愛清單</div>
+
+				</div>
 				<div id="product-name" class="name"></div>
 				<div id="product-id" class="id"></div>
 				<div id="product-price" class="price"></div>
@@ -76,6 +87,11 @@
 			<div class="description">
 				<div class="story" id="product-story"></div>
 				<div class="images" id="product-images"></div>
+				<div class="videos" id="product-videos"></div>
+				<div class="addVideos">
+					<input id="addInput" />
+					<button id="clickAdd">新增影片</button>
+				</div>
 			</div>
 		</div>
 	</main>
@@ -104,4 +120,5 @@
 		<img src="imgs/loading.gif" />
 	</div>
 </body>
+
 </html>

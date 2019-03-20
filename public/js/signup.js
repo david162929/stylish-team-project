@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Facebook Login JavaScript Example</title>
-<meta charset="UTF-8">
-</head>
-<body>
-<h1>test</h1>
-<script>
 //sign in
 //一般會員註冊
 //輸入 email, password 後點擊登入按鈕，判斷是否有此人，若有此人跳到 profile 頁，讀出姓名、email
@@ -64,7 +55,7 @@ function signup() {
 
 //一般會員登入
 function signin(data) {
-	const url = 'https://api.appworks-school.tw/api/1.0/user/signin';
+	const url = 'https://davidadm.com/api/1.0/user/signin';
 	// Default options are marked with *
 	console.log(data)
 	return fetch(url, {
@@ -103,21 +94,60 @@ function signin(data) {
 		.catch(err => console.log('error', err));
 }
 
-signin();
+function getCookies(name) {
+	let result = null;
+	cookies = document.cookie.split('; ');
+	cookies.forEach(element => {
+		if (element.indexOf(name) >= 0) {
+			result = element.split('=')[1];
+			//去拿 value
+		}
+	});
 
-</script>
+	return result; // null if not found
+}
 
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
+function checkFacebookLogin() {
+	FB.getLoginStatus(function (response) {
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
+		console.log(response)
+		if (response.status === 'connected') {
+			signin({
+				"access_token": response.authResponse.accessToken,
+				"provider": "facebook"
+			});
+		} else {
+			//handle non login
+		}
+	});
+}
 
-<div id="status">
-</div>
+(() => {
 
-</body>
-</html>
+	if (app.state.auth !== null) {
+		//window.location = "./";
+	}
+	app.fb.load();
+	app.fb.statusChangeCallback = function () {
+		if (app.state.auth !== null) {
+			//window.location = "profile.html";
+		}
+	};
+
+	const sign1 = document.getElementById('sign1');
+	sign1.addEventListener("click", signin);
+
+	const signUpButton = document.getElementById('signUpButton');
+	signUpButton.addEventListener("click", () => {
+		signup({
+			"email": document.getElementById('loginAccount').value,
+			"password": document.getElementById('loginPassword').value,
+			"provider": "native"
+		})
+	});
+
+	const token = getCookies('token');
+	if (token) {
+		//window.location = "profile.html";
+	}
+})();
