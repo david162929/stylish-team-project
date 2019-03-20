@@ -6,11 +6,38 @@ main{
 main>.view{
 	max-width:600px;
 }
+
+main>.login{
+	max-width: 600px;
+    margin: 0px auto;
+}
+
+.LoginTableMain{
+	display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    max-width: inherit;
+	width: 100%;
+	text-align: start;
+}
+
+.loginF2{
+	margin: 10px;s
+}
+
 @media (max-width:600px){
 	main{
 		padding-top:50px;padding-bottom:300px;
+	}	
+}
+
+@media (max-width:400px){
+.LoginTableMain{
+	text-align: center;
 	}
 }
+
 /* .headline */
 main>.view>.headline{
 	padding-bottom:15px;border-bottom:1px solid #979797;
@@ -29,44 +56,6 @@ main>.view>.profile>.details{
 	flex:auto;line-height:2em;font-size:1.2em;
 	overflow-x:hidden;white-space:nowrap;
 }
-
-.content {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-between;
-	height: 50vh;
-  }
-
-.checkmark,
-.crossmark
-{
-    width: 40vw;
-    border: gray 1px solid;
-    font-size: 12px;
-    line-height: 3em;
-    padding-left: 10px;
-	border: gray 1px solid;
-	text-align: start;
-}
-
-
-.header{
-    margin-top: 20px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-repeat: no-repeat;
-    background-size: cover; 
-    background-position: center;
-    border : gray 1px solid;
-}
-
-.header > img{
-  width: 100%;
-
-}
-
 @media (max-width:600px){
 	main>.view>.profile{
 		flex-wrap:wrap;justify-content:center;margin-top:20px;
