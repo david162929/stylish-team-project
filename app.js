@@ -1658,7 +1658,7 @@ function pavoriteFormat (arr) {
 
 
 /* ---------------Error--------------- */
-/* //catch 404 error
+//catch 404 error
 app.use((req, res)=>{
 	res.status(404).send("沒有找到頁面ㄏㄏ");
 });
@@ -1671,7 +1671,7 @@ app.use((err, req, res, next) => {
 	}
 	res.statusCode(err.statusCode).send(err.message);
 });
- */
+
 
 module.exports=app;
 // git password: af7258ba52ea0bd3756239234f5f46812cc57510 
