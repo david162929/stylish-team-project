@@ -148,6 +148,6 @@ function checkFacebookLogin() {
 
 	const token = getCookies('token');
 	if (token) {
-		//window.location = "profile.html";
+		window.location = "profile.html";
 	}
 })();
