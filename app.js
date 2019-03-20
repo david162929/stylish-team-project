@@ -624,24 +624,34 @@ app.get("/test-video-a", (req, res) => {
 });
 
 app.get("/test-mail", (req, res)=>{
-	const transorter = nodemailer.createTransport("SMTP",{
+	const transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
 			user: "en162929@gmail.com",
 			pass: "d8335083350"
 		}
 	});
+	
+/* 	const transporter = nodemailer.createTransport( {
+			host: 'smtp.gmail.com',
+			secureConnecton: true,
+			port: 587,
+			auth: {
+			user: "en162929@gmail.com",
+			pass: "d8335083350"
+		}
+	}); */
 	const mailOptions = {
-		from: "en162929@gmail",
-		to:"en162929@gmail",
+		from: "en162929@gmail.com",
+		to:"en162929@gmail.com",
 		subject: "Sending Email using Node.js",
 		text: "test OK"
 	};
 	
 	transporter.sendMail(mailOptions, (err, info)=>{
-		if (error) {
-			console.log(error);
-			res.send(error);
+		if (err) {
+			console.log(err);
+			res.send(err);
 		}
 		else {
 			console.log("Email sent: "+ info.response);
@@ -649,6 +659,12 @@ app.get("/test-mail", (req, res)=>{
 		}
 	});
 });
+
+app.get("/test1", (req, res)=> {
+	let html = fs.readFileSync("./public/test-fetch.html", "utf8");
+	res.send(html);
+});
+
 
 //Upload avatar API
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {

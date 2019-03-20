@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Facebook Login JavaScript Example</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>test</h1>
+<script>
+//sign in
+//一般會員註冊
+//輸入 email, password 後點擊登入按鈕，判斷是否有此人，若有此人跳到 profile 頁，讀出姓名、email
+
+function signup() {
+	const url = 'https://davidadm.com/api/1.0/user/signup';
+	const data = {
+		"name": document.getElementById('login-name').value,
+		"email": document.getElementById('login-account').value,
+		"password": document.getElementById('login-password').value
+	};
+
+	// Default options are marked with *
+	return fetch(url, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data), // must match 'Content-Type' header
+			method: 'POST', // *GET, POST, PUT, DELETE, etc.
+			// mode: 'no-cors',
+
+		})
+		.then(response => {
+
+			const {
+				status
+			} = response;
+
+			// const status = response.status;
+
+			if (status) {
+				response.json().then(result => {
+					console.log('result', result)
+
+					// https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+					const {
+						access_token,
+						access_expired
+					} = result.data;
+
+					document.cookie = `token=${access_token};max-age=${access_expired}`;
+					//讓後端拿到資料，然後跳轉到 profile 頁面
+
+					window.location = "profile.html";
+				});
+			} else {
+				throw ('fetch error')
+			}
+			// 輸出成 json
+		})
+		.catch(err => console.log('error', err));
+}
+
+
+
+//一般會員登入
+function signin(data) {
+	const url = 'https://davidadm.com/api/1.0/user/signin';
+	// Default options are marked with *
+	console.log(data)
+	return fetch(url, {
+			headers: {
+				'user-agent': 'Mozilla/4.0 MDN Example',
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify(data), // must match 'Content-Type' header
+			method: 'POST', // *GET, POST, PUT, DELETE, etc.
+			// mode: 'no-cors',
+		})
+		.then(response => {
+			console.log(response)
+			const {
+				status
+			} = response;
+
+			// const status = response.status;
+
+			if (status) {
+				response.json().then(result => {
+					const {
+						access_token,
+						access_expired
+					} = result.data;
+
+					document.cookie = `token=${access_token};max-age=${access_expired}`;
+					//讓後端拿到資料確認，然後跳轉到 profile 頁面
+					window.location = "profile.html";
+				});
+			} else {
+				throw ('fetch error')
+			}
+			// 輸出成 json
+		})
+		.catch(err => console.log('error', err));
+}
+
+signin();
+
+</script>
+
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+-->
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+
+</body>
+</html>
