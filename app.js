@@ -5,6 +5,7 @@ const fs = require("fs");
 const request = require("request");
 const mysql2 = require("mysql2");
 const Client = require('ssh2').Client;
+const nodemailer = require('nodemailer');
 
 /* --------------- MySQL Initialization --------------- */
 const mysql = {};
@@ -622,7 +623,21 @@ app.get("/test-video-a", (req, res) => {
 	});
 });
 
-
+app.get("/test-mail", (req, res)=>{
+	const transorter = nodemailer.createTransport("SMTP",{
+		service: "gmail",
+		auth: {
+			user: "en162929@gmail.com",
+			pass: "d8335083350"
+		}
+	});
+	const mailOptions = {
+		from: "",
+		to:"",
+		subject: "",
+		text: ""
+	};
+});
 
 //Upload avatar API
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
@@ -1632,7 +1647,7 @@ function pavoriteFormat (arr) {
 
 
 /* ---------------Error--------------- */
-/* //catch 404 error
+//catch 404 error
 app.use((req, res)=>{
 	res.status(404).send("沒有找到頁面ㄏㄏ");
 });
@@ -1645,7 +1660,7 @@ app.use((err, req, res, next) => {
 	}
 	res.statusCode(err.statusCode).send(err.message);
 });
- */
+
 
 module.exports=app;
 // git password: af7258ba52ea0bd3756239234f5f46812cc57510 
