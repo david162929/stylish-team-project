@@ -292,7 +292,6 @@ const upload = multer({ storage: storage });
 
 // CORS Control
 app.use("/api/", function(req, res, next){
-	console.log("pass CORS.");
 	res.set("Access-Control-Allow-Origin", "*");
 	res.set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
 	res.set("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -782,6 +781,80 @@ app.get("/test-sqs", (req, res) => {
 	
 });
 
+app.get("/test-chat-bot", (req, res) => {
+	//init watson-developer-cloud
+	const AssistantV2 = require('watson-developer-cloud/assistant/v2');
+
+	const assistant = new AssistantV2({
+		version: '2019-02-28',
+		iam_apikey: 'S_k3B0nmkvm_hwlCGzFXgCbUkuCjfNaTDKedhh_sBKks',
+		url: 'https://gateway.watsonplatform.net/assistant/api'
+	});
+	
+	const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+	
+	//create session
+	assistant.createSession({
+		assistant_id: assistantId,
+	}, function(err, response) {
+		if (err) {
+			console.error(err);
+		}
+		else {
+			console.log(JSON.stringify(response, null, 2));
+			const sessionId = response.session_id;
+			
+			//send message
+			assistant.message({
+				assistant_id: assistantId,
+				session_id: sessionId,
+				input: {
+					'message_type': 'text',
+					'text': 'hello!'
+				}
+			}, (err, response) => {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					console.log(JSON.stringify(response, null, 2));
+					const botRes = response.output.generic[0].text;
+					console.log(botRes);
+					res.redirect("/test");
+				}
+			});
+		}
+	});
+});
+
+app.get("/test-chat-bot-api", (req, res) => {
+	// Set the headers
+	let headers = {
+		'content-type':     'application/json',
+		authorization: testAuthorization
+	}
+	let data = {
+		"user_message":"hello~",
+	};
+	
+	// Configure the request
+	let options = {
+		url: `${testHostName}/api/1.0/chat-bot`,
+		method: 'POST',
+		headers: headers,
+		json:data
+	}
+
+	// Start the request
+	request(options, (error, response, body) => {
+		if (!error && response.statusCode == 200) {
+			// Print out the response body
+			console.log(body);
+			res.send(body);
+		}
+	})
+});
+
 
 
 /* --------------- Upload avatar API --------------- */
@@ -1147,7 +1220,6 @@ app.get("/api/1.0/products/video-add", (req, res) => {
 
 /* --------------- Email API --------------- */
 app.post("/api/1.0/admin/email-send", async(req, res) => {
-	console.log("pass email send.");
 	const userToken = req.body.user_token;
 	const orderNumber = req.body.order_number;
 	console.log(userToken, orderNumber);
@@ -1233,6 +1305,89 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 		res.send(errorFormat("Authorization is required."));
 	}
 });
+
+/* --------------- Chat Bot API --------------- */
+app.post("/api/1.0/chat-bot", (req, res) => {
+	const userMessage = req.body.user_message;
+	console.log(userMessage);
+	
+	let authorization = req.headers.authorization;
+	
+	//check authorization
+	if (authorization) {
+		authorization = authorization.split(" ");
+		console.log(authorization[0], authorization[1]);
+		try {
+			//check Bearer
+			if(authorization[0] === "Bearer") {
+				//check token 
+				if (authorization[1] === "iamacoolguyilovetaiwan") {
+					//check req.headers and req.body
+					if (req.headers['content-type'] === 'application/json') {
+						
+						//init watson-developer-cloud
+						const AssistantV2 = require('watson-developer-cloud/assistant/v2');
+						const assistant = new AssistantV2({
+							version: '2019-02-28',
+							iam_apikey: 'S_k3B0nmkvm_hwlCGzFXgCbUkuCjfNaTDKedhh_sBKks',
+							url: 'https://gateway.watsonplatform.net/assistant/api'
+						});
+						const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+						
+						//create session
+						assistant.createSession({
+							assistant_id: assistantId,
+						}, function(err, response) {
+							if (err) {
+								console.error(err);
+							}
+							else {
+								console.log(JSON.stringify(response, null, 2));
+								const sessionId = response.session_id;
+								
+								//send message
+								assistant.message({
+									assistant_id: assistantId,
+									session_id: sessionId,
+									input: {
+										'message_type': 'text',
+										'text': `${userMessage}`
+									}
+								}, (err, response) => {
+									if (err) {
+										console.log(err);
+									}
+									else {
+										console.log(JSON.stringify(response, null, 2));
+										const botRes = response.output.generic[0].text;
+										console.log(botRes);
+										res.send(dataFormat(botRes));
+									}
+								});
+							}
+						});
+						
+					}
+					else {
+						res.send(errorFormat("Please use application/json."));
+					}
+				}
+				else {
+					res.send(errorFormat("Wrong token."));
+				}			
+			}
+			else {
+				res.send(errorFormat("Please use Bearer schemes."));
+			}
+		}catch(e) {
+			res.send(e);
+		}
+	}
+	else {
+		res.send(errorFormat("Authorization is required."));
+	}
+});
+
 
 
 
