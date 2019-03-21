@@ -292,6 +292,7 @@ const upload = multer({ storage: storage });
 
 // CORS Control
 app.use("/api/", function(req, res, next){
+	console.log("pass CORS.");
 	res.set("Access-Control-Allow-Origin", "*");
 	res.set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
 	res.set("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -711,7 +712,7 @@ app.get("/test-sqs", (req, res) => {
 	
 /* 	//send
 	var params = {
-	  //DelaySeconds: 10,
+	  DelaySeconds: 10,
 	  MessageAttributes: {
 		"Title": {
 		  DataType: "String",
@@ -726,10 +727,10 @@ app.get("/test-sqs", (req, res) => {
 		  StringValue: "6"
 		}
 	  },
-	  MessageGroupId: "stylish-test",
-	  MessageDeduplicationId: "stylish-test-deduplication",
+	  //MessageGroupId: "stylish-test",
+	  //MessageDeduplicationId: "stylish-test-deduplication",
 	  MessageBody: "Information about current NY Times fiction bestseller for week of 12/11/2016.",
-	  QueueUrl: "https://sqs.us-east-2.amazonaws.com/091043113581/stylish-web.fifo"
+	  QueueUrl: "https://sqs.us-east-2.amazonaws.com/091043113581/stylis-test"
 	};
 
 	sqs.sendMessage(params, function(err, data) {
@@ -741,7 +742,7 @@ app.get("/test-sqs", (req, res) => {
 	}); */
 	
 	//receive
-	var queueURL = "https://sqs.us-east-2.amazonaws.com/091043113581/stylish-web.fifo";
+	var queueURL = "https://sqs.us-east-2.amazonaws.com/091043113581/stylis-test";
 
 	var params = {
 	 AttributeNames: [
@@ -760,7 +761,7 @@ app.get("/test-sqs", (req, res) => {
 	  if (err) {
 		console.log("Receive Error", err);
 	  } else if (data.Messages) {
-		console.log(data);
+		//console.log(data);
 		console.log(data.Messages);
 		
 		
@@ -1146,6 +1147,7 @@ app.get("/api/1.0/products/video-add", (req, res) => {
 
 /* --------------- Email API --------------- */
 app.post("/api/1.0/admin/email-send", async(req, res) => {
+	console.log("pass email send.");
 	const userToken = req.body.user_token;
 	const orderNumber = req.body.order_number;
 	console.log(userToken, orderNumber);
