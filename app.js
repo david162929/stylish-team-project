@@ -1324,6 +1324,7 @@ app.post("/api/1.0/chat-bot", (req, res) => {
 				//check token 
 				if (authorization[1] === "iamacoolguyilovetaiwan") {
 					//check req.headers and req.body
+					console.log(req.headers);
 					if (req.headers['content-type'] === 'application/json') {
 						
 						//init watson-developer-cloud
