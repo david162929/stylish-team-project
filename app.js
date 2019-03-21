@@ -1238,7 +1238,7 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 				//check token 
 				if (authorization[1] === "iamacoolguyilovetaiwan") {
 					//check req.headers and req.body
-					if (req.headers['content-type'] === 'application/json' && userToken && orderNumber) {
+					if (req.headers['content-type'].search('application/json') >= 0 && userToken && orderNumber) {
 						//get userName
 						let result1 = await sqlQuery(`SELECT id, email, name FROM user WHERE access_token = "${userToken}"`);
 						console.log(result1);
@@ -1325,7 +1325,7 @@ app.post("/api/1.0/chat-bot", (req, res) => {
 				if (authorization[1] === "iamacoolguyilovetaiwan") {
 					//check req.headers and req.body
 					console.log(req.headers);
-					if (req.headers['content-type'] === 'application/json') {
+					if (req.headers['content-type'].search('application/json') >= 0) {
 						
 						//init watson-developer-cloud
 						const AssistantV2 = require('watson-developer-cloud/assistant/v2');
