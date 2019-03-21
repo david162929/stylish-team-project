@@ -6,6 +6,7 @@ const request = require("request");
 const mysql2 = require("mysql2");
 const Client = require('ssh2').Client;
 const nodemailer = require('nodemailer');
+const AWS = require('aws-sdk');
 
 /* --------------- MySQL Initialization --------------- */
 const mysql = {};
@@ -314,7 +315,6 @@ const testHostName = "http://localhost:3000";
 //const testAuthorization = "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29";
 const testAuthorization = "Bearer iamacoolguyilovetaiwan";
 
-
 app.get("/test", (req, res)=>{
 	res.render("testlist");
 });
@@ -608,7 +608,7 @@ app.get("/test-video-a", (req, res) => {
 	
 	// Configure the request
 	let options = {
-		url: `${testHostName}/api/1.0/products/video-add?id=201807201824&link=https://www.youtube.com/embed/Tas1h6rqHDE`,
+		url: `${testHostName}/api/1.0/products/video-add?id=201807201824&link=https://www.youtube.com/watch?v=Tas1h6rqHDE`,
 		method: 'GET',
 		headers: headers
 	}
@@ -699,8 +699,91 @@ app.get("/test-email-s", (req, res) => {
 	})
 });
 
+app.get("/test-sqs", (req, res) => {
+	//set access key id and access key
+	const credentials = new AWS.SharedIniFileCredentials({profile: 'stylish-sqs'});
+	AWS.config.credentials = credentials;
+	
+	AWS.config.update({region: 'us-west-2'});
+	
+	// Create an SQS service object
+	var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+	
+/* 	//send
+	var params = {
+	  //DelaySeconds: 10,
+	  MessageAttributes: {
+		"Title": {
+		  DataType: "String",
+		  StringValue: "The Whistler"
+		},
+		"Author": {
+		  DataType: "String",
+		  StringValue: "John Grisham"
+		},
+		"WeeksOn": {
+		  DataType: "Number",
+		  StringValue: "6"
+		}
+	  },
+	  MessageGroupId: "stylish-test",
+	  MessageDeduplicationId: "stylish-test-deduplication",
+	  MessageBody: "Information about current NY Times fiction bestseller for week of 12/11/2016.",
+	  QueueUrl: "https://sqs.us-east-2.amazonaws.com/091043113581/stylish-web.fifo"
+	};
 
-//Upload avatar API
+	sqs.sendMessage(params, function(err, data) {
+	  if (err) {
+		console.log("Error", err);
+	  } else {
+		console.log("Success", data.MessageId);
+	  }
+	}); */
+	
+	//receive
+	var queueURL = "https://sqs.us-east-2.amazonaws.com/091043113581/stylish-web.fifo";
+
+	var params = {
+	 AttributeNames: [
+		"SentTimestamp"
+	 ],
+	 MaxNumberOfMessages: 1,
+	 MessageAttributeNames: [
+		"All"
+	 ],
+	 QueueUrl: queueURL,
+	 VisibilityTimeout: 20,
+	 WaitTimeSeconds: 0
+	};
+
+	sqs.receiveMessage(params, function(err, data) {
+	  if (err) {
+		console.log("Receive Error", err);
+	  } else if (data.Messages) {
+		console.log(data);
+		console.log(data.Messages);
+		
+		
+/* 		var deleteParams = {
+		  QueueUrl: queueURL,
+		  ReceiptHandle: data.Messages[0].ReceiptHandle
+		};
+		sqs.deleteMessage(deleteParams, function(err, data) {
+		  if (err) {
+			console.log("Delete Error", err);
+		  } else {
+			console.log("Message Deleted", data);
+		  }
+		}); */
+	  }
+	});
+	
+	
+});
+
+
+
+/* --------------- Upload avatar API --------------- */
 app.post("/api/1.0/admin/avatar", upload.single('avatar'), async (req, res) => {
 	console.log(req.file);
 	console.log(req.body);
@@ -1000,7 +1083,9 @@ app.get("/api/1.0/products/video-get", (req, res) => {
 	
 	sqlQuery(`SELECT video_link FROM product WHERE id = "${productId}"`)
 	.then((result1)=>{
-		const videoLink = result1[0].video_link;
+		let videoLink = result1[0].video_link;
+		videoLink = videoLinkFormat(videoLink);
+		
 		res.send(dataFormat([`${videoLink}`]));
 	})
 	.catch((err)=>{
@@ -1032,7 +1117,9 @@ app.get("/api/1.0/products/video-add", (req, res) => {
 					.then(()=>{
 						sqlQuery(`SELECT video_link FROM product WHERE id = "${productId}"`)
 						.then((result1)=>{
-							const videoLink = result1[0].video_link;
+							let videoLink = result1[0].video_link;
+							videoLink = videoLinkFormat(videoLink);
+							
 							res.send(dataFormat([`${videoLink}`]));
 						});
 					})
@@ -1088,6 +1175,7 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 						console.log(result2);
 						const orderDetails = JSON.stringify(result2[0].details, null, 4);
 						
+						//set SMTP server
 						const transporter = nodemailer.createTransport( {
 								host: 'smtp.gmail.com',
 								secureConnecton: true,
@@ -1098,8 +1186,11 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 							}
 						});
 						
-						let html = `<h1>Welcome! ${userName}</h1><h2>感謝您的購買!</h2><br><h3>您的訂單編號：</h3><br><p>${orderNumber}</p><br><h3>訂單內容：</h3><br><p>${orderDetails}</p>`;
-						
+						//set email content
+						const html = `<h1>Welcome! ${userName}</h1><h2>感謝您的購買!</h2>
+										<h3>您的訂單編號：   </h3><p>${orderNumber}</p><br>
+										<h3>訂單內容：</h3><br>
+										<p>${orderDetails}</p>`;
 						const mailOptions = {
 							from: "en162929@gmail.com",
 							to: `${userEmail}`,
@@ -1108,7 +1199,7 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 						};
 						
 						
-						
+						//send Email
 						transporter.sendMail(mailOptions, (err, info)=>{
 							if (err) {
 								console.log(err);
@@ -1139,8 +1230,6 @@ app.post("/api/1.0/admin/email-send", async(req, res) => {
 	else {
 		res.send(errorFormat("Authorization is required."));
 	}
-	
-
 });
 
 
@@ -1783,6 +1872,14 @@ function errorFormat (str) {
 	str = {error: str};
 	return JSON.stringify(str);
 }
+
+//video Link Format
+function videoLinkFormat(link) {
+	let resFin = link.split("=");
+	console.log(resFin[1]);
+	return resFin[1];
+}
+
 
 /* ---------------Favorite Format--------------- */
 function pavoriteFormat (arr) {
