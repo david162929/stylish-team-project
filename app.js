@@ -791,7 +791,8 @@ app.get("/test-chat-bot", (req, res) => {
 		url: 'https://gateway.watsonplatform.net/assistant/api'
 	});
 	
-	const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+	//const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+	const assistantId = 'ce62aa0b-0872-45d0-8cc3-8bef17cba113';
 	
 	//create session
 	assistant.createSession({
@@ -810,7 +811,7 @@ app.get("/test-chat-bot", (req, res) => {
 				session_id: sessionId,
 				input: {
 					'message_type': 'text',
-					'text': 'hello!'
+					'text': '你好'
 				}
 			}, (err, response) => {
 				if (err) {
@@ -834,7 +835,7 @@ app.get("/test-chat-bot-api", (req, res) => {
 		authorization: testAuthorization
 	}
 	let data = {
-		"user_message":"hello~",
+		"user_message":"你好",
 	};
 	
 	// Configure the request
@@ -1332,7 +1333,8 @@ app.post("/api/1.0/chat-bot", (req, res) => {
 							iam_apikey: 'S_k3B0nmkvm_hwlCGzFXgCbUkuCjfNaTDKedhh_sBKks',
 							url: 'https://gateway.watsonplatform.net/assistant/api'
 						});
-						const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+						//const assistantId = '407cb56c-018a-4b47-a18c-4719e59741c3';
+						const assistantId = 'ce62aa0b-0872-45d0-8cc3-8bef17cba113';
 						
 						//create session
 						assistant.createSession({
