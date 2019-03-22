@@ -310,8 +310,8 @@ function testVariable () {
 	
 }
 
-const testHostName = "http://localhost:3000";
-//const testHostName = "https://davidadm.com";
+//const testHostName = "http://localhost:3000";
+const testHostName = "https://davidadm.com";
 //const testAuthorization = "Bearer 53b23a2b5f3e79fdb03f2b43141e56a68ee32787f76129cc6deedab4d4fdbb29";
 const testAuthorization = "Bearer iamacoolguyilovetaiwan";
 
@@ -1324,7 +1324,6 @@ app.post("/api/1.0/chat-bot", (req, res) => {
 				//check token 
 				if (authorization[1] === "iamacoolguyilovetaiwan") {
 					//check req.headers and req.body
-					console.log(req.headers);
 					if (req.headers['content-type'].search('application/json') >= 0) {
 						
 						//init watson-developer-cloud
