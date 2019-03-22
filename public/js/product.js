@@ -188,11 +188,13 @@ function getVideos(id) {
 function showVideos(data) {
 	console.log(data);
 	for (let i = 0; i < data.data.length; i += 1) {
-		let src = data.data[i];
+		let youtubeLink = data.data[i];
+		console.log(youtubeLink);
+		let src = 'https://www.youtube.com/embed/' + youtubeLink;
 		let frame = document.getElementById('product-videos');
 		let video = document.createElement('div');
 		frame.appendChild(video);
-		video.innerHTML = `<iframe width="560" height="315" src=${src} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+		video.innerHTML = `<iframe width="560" height="315" src=${src} frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 	}
 }
 
@@ -243,6 +245,7 @@ function getCookies(name) {
 
 	return result; // null if not found
 }
+
 
 
 //like button

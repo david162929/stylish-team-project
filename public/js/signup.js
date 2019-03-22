@@ -15,7 +15,8 @@ function signup() {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(data), // must match 'Content-Type' header
+			body: JSON.stringify(data), //把 object 轉乘 json 格式的字串，backend 會再轉乘
+			//json // must match 'Content-Type' header
 			method: 'POST', // *GET, POST, PUT, DELETE, etc.
 			// mode: 'no-cors',
 
@@ -96,6 +97,7 @@ function signin(data) {
 
 function getCookies(name) {
 	let result = null;
+	//用分號切開來，等於切左邊右邊
 	cookies = document.cookie.split('; ');
 	cookies.forEach(element => {
 		if (element.indexOf(name) >= 0) {
@@ -112,6 +114,8 @@ function checkFacebookLogin() {
 
 		console.log(response)
 		if (response.status === 'connected') {
+
+			//把 fb 給的東西丟給 backend
 			signin({
 				"access_token": response.authResponse.accessToken,
 				"provider": "facebook"
@@ -125,7 +129,7 @@ function checkFacebookLogin() {
 (() => {
 
 	if (app.state.auth !== null) {
-		//window.location = "./";
+		//window.location = "./"; //跳回首頁
 	}
 	app.fb.load();
 	app.fb.statusChangeCallback = function () {
@@ -135,13 +139,20 @@ function checkFacebookLogin() {
 	};
 
 	const sign1 = document.getElementById('sign1');
-	sign1.addEventListener("click", signin);
+	sign1.addEventListener("click", () => {
+		signin({
+			"email": document.getElementById('loginAccount').value,
+			"password": document.getElementById('loginPassword').value,
+			"provider": "native"
+		})
+	});
 
 	const signUpButton = document.getElementById('signUpButton');
 	signUpButton.addEventListener("click", () => {
+		// TODO: fixme.
 		signup({
-			"email": document.getElementById('loginAccount').value,
-			"password": document.getElementById('loginPassword').value,
+			"email": document.getElementById('login-account').value,
+			"password": document.getElementById('login-password').value,
 			"provider": "native"
 		})
 	});
