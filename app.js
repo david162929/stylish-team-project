@@ -37,7 +37,7 @@ ssh.on('ready', function() {
 		});
 	}).connect({
 	// ssh connection config ...
-	host: '52.15.89.192',
+	host: '3.18.220.194',
 	port: 22,
 	username: 'ec2-user',
 	privateKey: require('fs').readFileSync(".ssh/2019-2-14-keyPair.pem")
