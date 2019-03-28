@@ -1,75 +1,181 @@
 @import "common.css";
+
 /* .keyvisual */
-div.keyvisual{
-	width:100%;height:500px;position:relative;
-	overflow:hidden;display:block;
+.chat-content {
+	text-align: -webkit-left;
+	height: 80vh;
+	border: #ffffff 1px solid;
+	background-color: snow;
 }
-div.keyvisual>.visual{
-	position:absolute;width:100%;height:100%;
-	left:0px;top:0px;opacity:0;
-	background-size:cover;
-	background-position:center center;
-	transition:opacity 1s;
+
+.sendMsg {
+	margin-right: 10px;
 }
-div.keyvisual>.current{
-	opacity:1;
+
+.chatline {
+	margin-top: 30px;
 }
-div.keyvisual>.visual>.story{
-	font-size:20px;line-height:40px;
-	width:60%;margin:0px auto;padding-top:160px;
-	text-shadow:0px 0px 5px #ffffff;
+
+.question {
+	width: 60%;
+	margin-right: 10px;
+	margin-left: 10px;
 }
-div.keyvisual>.step{
-	position:absolute;width:300px;bottom:20px;left:calc(50% - 150px);
-	text-align:center;
+
+#chatbot {
+	text-align: end;
+	margin-right: 10px;
 }
-div.keyvisual>.step>.circle{
-	width:10px;height:10px;margin:0px 10px;border-radius:50%;
-	background-color:#ffffff;opacity:0.75;
-	display:inline-block;vertical-align:middle;
-	transition:background-color 1s;
+
+.chatroom {
+	display: none;
+	height: 100vh;
+	width: 30%;
+	background-color: azure;
+	border: 1px solid #bbbbbb;
+	color: black;
+	z-index: 1000;
+	right: 100px;
+	position: fixed;
+	top: 100px;
+	right: 5px;
 }
-div.keyvisual>.step>.current{
-	background-color:#000000;
+
+
+buttom.chatwith {
+	cursor: pointer;
+	border: 1px solid #bbbbbb;
+	color: black;
+	padding: 10px;
+	align-self: flex-end
 }
-@media (max-width:600px){
-	div.keyvisual{
-		height:400px;
+
+buttom.chatwith:hover {
+	color: #ffffff;
+	background: #bbbbbb;
+}
+
+div.keyvisual {
+	width: 100%;
+	height: 500px;
+	position: relative;
+	overflow: hidden;
+	display: block;
+}
+
+div.keyvisual>.visual {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	opacity: 0;
+	background-size: cover;
+	background-position: center center;
+	transition: opacity 1s;
+}
+
+div.keyvisual>.current {
+	opacity: 1;
+}
+
+div.keyvisual>.visual>.story {
+	font-size: 20px;
+	line-height: 40px;
+	width: 60%;
+	margin: 0px auto;
+	padding-top: 160px;
+	text-shadow: 0px 0px 5px #ffffff;
+}
+
+div.keyvisual>.step {
+	position: absolute;
+	width: 300px;
+	bottom: 20px;
+	left: calc(50% - 150px);
+	text-align: center;
+}
+
+div.keyvisual>.step>.circle {
+	width: 10px;
+	height: 10px;
+	margin: 0px 10px;
+	border-radius: 50%;
+	background-color: #ffffff;
+	opacity: 0.75;
+	display: inline-block;
+	vertical-align: middle;
+	transition: background-color 1s;
+}
+
+div.keyvisual>.step>.current {
+	background-color: #000000;
+}
+
+@media (max-width:600px) {
+	div.keyvisual {
+		height: 400px;
 	}
-	div.keyvisual>.visual>.story{
-		padding-top:100px;width:70%;font-size:16px;
+
+	div.keyvisual>.visual>.story {
+		padding-top: 100px;
+		width: 70%;
+		font-size: 16px;
 	}
 }
+
 /* main */
-main{
-	padding:20px 0px;
+main {
+	padding: 20px 0px;
 }
+
 /* main .products */
-main .products{
-	display:flex;flex-wrap:wrap;width:100%;justify-content:center;align-items:flex-start;
-	line-height:2em;letter-spacing:4px;
+main .products {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	justify-content: center;
+	align-items: flex-start;
+	line-height: 2em;
+	letter-spacing: 4px;
 }
-main .products>.product{
-	display:block;flex:none;width:28%;margin:2%;
+
+main .products>.product {
+	display: block;
+	flex: none;
+	width: 28%;
+	margin: 2%;
 }
-main .products>.product>img{
-	width:100%;
+
+main .products>.product>img {
+	width: 100%;
 }
-main .products>.product>.name{
-	white-space:nowrap;overflow:hidden;
+
+main .products>.product>.name {
+	white-space: nowrap;
+	overflow: hidden;
 }
-main .products>.product>.colors{
-	margin-top:10px;margin-bottom:5px;
+
+main .products>.product>.colors {
+	margin-top: 10px;
+	margin-bottom: 5px;
 }
-main .products>.product>.colors>.color{
-	width:20px;height:20px;margin-right:10px;
-	display:inline-block;vertical-align:middle;box-shadow:0px 0px 1px #bbbbbb;
+
+main .products>.product>.colors>.color {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	display: inline-block;
+	vertical-align: middle;
+	box-shadow: 0px 0px 1px #bbbbbb;
 }
-@media (max-width:600px){
-	main .products{
-		letter-spacing:2px;
+
+@media (max-width:600px) {
+	main .products {
+		letter-spacing: 2px;
 	}
-	main .products>.product{
-		width:45%;
+
+	main .products>.product {
+		width: 45%;
 	}
 }

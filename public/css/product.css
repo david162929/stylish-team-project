@@ -30,6 +30,7 @@
 }
 
 .is-active {
+	border-style: none;
 	animation-name: animate;
 	animation-duration: .8s;
 	animation-iteration-count: 1;

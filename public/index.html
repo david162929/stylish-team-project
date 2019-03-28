@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stylish</title>
-<link rel="stylesheet" type="text/css" href="css/index.css" media="all" />
-<script src="js/lib.js"></script>
-<script src="js/index.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Stylish</title>
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="all" />
+	<script src="js/lib.js"></script>
+	<script src="js/index.js" defer></script>
 </head>
+
 <body>
 	<header>
 		<div class="padding-mobile"></div>
@@ -21,7 +23,9 @@
 			<form class="item" action="./">
 				<input type="text" class="search" name="tag" />
 			</form>
-			<a href="cart.html" class="item cart"><div id="cart-qty" class="qty"></div></a>
+			<a href="cart.html" class="item cart">
+				<div id="cart-qty" class="qty"></div>
+			</a>
 			<div class="item member">
 				<img src="imgs/member.png" />
 			</div>
@@ -35,7 +39,9 @@
 	<div class="padding-header-mobile"></div>
 	<div class="feature-mobile">
 		<a class="item" href="cart.html">
-			<div class="cart"><div id="cart-qty-mobile" class="qty"></div></div>
+			<div class="cart">
+				<div id="cart-qty-mobile" class="qty"></div>
+			</div>
 			購物車
 		</a>
 		<div class="item member">
@@ -49,6 +55,17 @@
 	<main>
 		<div class="view">
 			<div id="products" class="products"></div>
+			<div id="chatbot" class="chat">
+				<buttom id="chatButton" class="chatwith"> Chat</buttom>
+				<div class="chatroom">
+					<div class="chat-content">
+					</div>
+					<div class="chatline">
+						<input id="ask" class="question" />
+						<button id="answer" class="sendMsg">sendMessage</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</main>
 	<footer>
@@ -76,4 +93,5 @@
 		<img src="imgs/loading.gif" />
 	</div>
 </body>
+
 </html>
