@@ -22,9 +22,9 @@ ssh.on('ready', function() {
 		function (err, stream) {
 			if (err) throw err;
 			mysql.con = mysql2.createConnection({
-			  user: 'root',
-			  database: 'stylish',
-			  password: '567TYUghj@$^*',
+			  user: cst.MYSQL_USER,
+			  database: cst.MYSQL_DATABASE,
+			  password: cst.MYSQL_PASSWORD,
 			  stream: stream,
 			});		
 				
@@ -37,10 +37,10 @@ ssh.on('ready', function() {
 		});
 	}).connect({
 	// ssh connection config ...
-	host: '3.18.220.194',
+	host: cst.MYSQL_HOST,
 	port: 22,
-	username: 'ec2-user',
-	privateKey: require('fs').readFileSync(".ssh/2019-2-14-keyPair.pem")
+	username: cst.MYSQL_USERNAME,
+	privateKey: require('fs').readFileSync(cst.MYSQL_KEY)
 }); 
 
 
